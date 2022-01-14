@@ -1,15 +1,20 @@
 const express = require('express')
 const cors = require('cors')
 const path = require('path')
+
 const app = express()
+
 const {bots, playerRecord} = require('./data')
 const {shuffleArray} = require('./utils')
+
 const ctrl = require('./controller')
 
+
+app.use(express.static('public'))
 app.use(express.json())
 app.use(cors())
 
-app.use(express.static('public'))
+
 
 
 app.get('/', function(req,res) {
