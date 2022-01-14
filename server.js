@@ -14,6 +14,16 @@ app.use(express.static('public'))
 app.use(express.json())
 app.use(cors())
 
+var Rollbar = require('rollbar')
+var rollbar = new Rollbar({
+  accessToken: 'b634e865f32341a4aa4a2a220bfdfbc6',
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+})
+
+// record a generic message and send it to Rollbar
+rollbar.log('Hello world!')
+
 
 
 
@@ -29,6 +39,7 @@ app.get('/api/robots', ctrl.getAllBotsBack)
 app.get('/api/robots', (req, res) => {
     try {
         res.status(200).send(botsArr)
+        rollbar.info('robots were requested')
     } catch (error) {
         console.log('ERROR GETTING BOTS', error)
         res.sendStatus(400)
@@ -41,6 +52,7 @@ app.get('/api/robots/five', (req, res) => {
         let choices = shuffled.slice(0, 5)
         let compDuo = shuffled.slice(6, 8)
         res.status(200).send({choices, compDuo})
+        rollbar.info('robot choices displayed')
     } catch (error) {
         console.log('ERROR GETTING FIVE BOTS', error)
         res.sendStatus(400)
@@ -81,9 +93,11 @@ app.post('/api/duel', (req, res) => {
 app.get('/api/player', (req, res) => {
     try {
         res.status(200).send(playerRecord)
+        rollbar.info('player stats displayed')
     } catch (error) {
         console.log('ERROR GETTING PLAYER STATS', error)
         res.sendStatus(400)
+        rollbar.warning('error getting player stats')
     }
 })
 
